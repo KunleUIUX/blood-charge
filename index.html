@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Blood Charge</title>
+<meta name="description" content="Blood Charge helps people in Lagos find a donation centre, book a time and see which patient their blood helped.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Blood Charge">
+<meta property="og:description" content="Give blood near you. Find a centre in Lagos, book a time and see which patient your blood helped.">
+<meta property="og:image" content="assets/b1-black.webp">
+<meta property="og:type" content="website">
+<meta name="author" content="Adekunle Oladosu">
+<style>
+/* Layout: Apple product-page rhythm. Centred editorial bands, a bento grid, one pinned dark scene. Single light look with one black band, chosen on purpose. */
+:root{
+  --bg:#ffffff;
+  --band:#f5f5f7;
+  --ink:#1d1d1f;
+  --grey:#6e6e73;
+  --mute:#d2d2d7;
+  --red:#e0282a;
+  --red-hi:#ff3b30;
+  --night:#000000;
+  --night-2:#1c1c1e;
+  --night-grey:#a1a1a6;
+  --hair:rgba(0,0,0,.1);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --gutter:max(22px,calc((100vw - 1200px)/2));
+  --ease:cubic-bezier(.22,1,.36,1);
+  --spring:cubic-bezier(.34,1.4,.64,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.47;letter-spacing:-.022em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block;height:auto}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,p{margin:0}
+h1,h2{text-wrap:balance}
+:focus-visible{outline:3px solid var(--red-hi);outline-offset:3px;border-radius:8px}
+.band{padding-inline:var(--gutter);position:relative}
+.center{text-align:center;display:flex;flex-direction:column;align-items:center}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(251,251,253,.8);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid transparent;transition:border-color .3s}
+.nav.scrolled{border-bottom-color:var(--hair)}
+.nav-in{height:52px;display:flex;align-items:center;gap:28px;padding-inline:var(--gutter)}
+.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:600;letter-spacing:.01em;margin-right:auto;white-space:nowrap}
+.icon{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#ff6b5c,var(--red));display:grid;place-items:center;flex:none}
+.icon svg{width:58%;height:58%}
+.links{display:flex;gap:28px;font-size:12px;letter-spacing:-.01em}
+.links a{color:var(--grey);transition:color .2s}
+.links a:hover,.links a.on{color:var(--ink)}
+.pill{white-space:nowrap;flex:none;display:inline-flex;align-items:center;justify-content:center;background:var(--red);color:#fff;border-radius:980px;font-size:12px;padding:5px 13px;transition:transform .1s var(--ease),background .2s}
+.pill:hover{background:#c41f22}
+.pill:active,.badge:active{transform:scale(.97)}
+.menu{display:none;background:none;border:0;padding:8px;margin:-8px;color:var(--ink);cursor:pointer}
+.drawer{display:none}
+@media (max-width:833px){
+  .links{display:none}
+  .menu{display:block}
+  .nav-in{gap:18px}
+  .brand{font-size:17px;gap:8px}
+  .brand .icon{width:24px;height:24px;border-radius:7px}
+  .drawer{display:grid;gap:0;padding:0 var(--gutter);max-height:0;overflow:hidden;transition:max-height .45s var(--ease)}
+  .nav.open .drawer{max-height:280px}
+  .drawer a{padding:14px 0;border-top:1px solid var(--hair);font-size:17px;font-weight:600}
+}
+
+/* type */
+.eyebrow{font-size:clamp(19px,2vw,24px);font-weight:600;color:var(--red);letter-spacing:.004em}
+.h1{font-size:clamp(48px,8vw,96px);line-height:1.04;font-weight:700;letter-spacing:-.03em}
+.h2{font-size:clamp(40px,5.4vw,64px);line-height:1.06;font-weight:700;letter-spacing:-.028em}
+.sub{font-size:clamp(19px,2.2vw,28px);line-height:1.25;font-weight:600;color:var(--grey);letter-spacing:.004em;max-width:30ch}
+.link{display:inline-flex;align-items:center;gap:4px;color:var(--red);font-size:clamp(17px,1.6vw,19px)}
+.link svg{width:.7em;height:.7em;transition:transform .25s var(--ease)}
+.link:hover{text-decoration:underline}
+.link:hover svg{transform:translateX(3px)}
+.note{font-size:14px;color:var(--grey)}
+
+/* store badges */
+.stores{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.badge{display:inline-flex;align-items:center;gap:9px;height:52px;padding:0 18px 0 13px;background:#000;color:#fff;border:1px solid #a6a6a6;border-radius:12px;text-align:left;transition:transform .1s var(--ease),background .2s;cursor:pointer;font:inherit}
+.badge:hover{background:#1d1d1f}
+.badge svg{flex:none}
+.badge small{display:block;font-size:10.5px;line-height:1.1;letter-spacing:.02em;font-weight:500}
+.badge b{display:block;font-size:21px;line-height:1.1;font-weight:600;letter-spacing:-.02em}
+
+/* hero */
+.hero{padding-block:clamp(56px,8vw,96px) 0;gap:16px;overflow:hidden}
+.hero .ctas{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:20px}
+.stage{position:relative;width:min(1100px,100%);height:clamp(420px,52vw,700px);margin-top:28px}
+.stage img{position:absolute;bottom:-14%;width:clamp(170px,23vw,330px);will-change:transform}
+.stage .ph-c{left:50%;width:clamp(210px,27vw,390px);bottom:-6%;z-index:2;transform:translate(-50%,calc(var(--rise,0px) + var(--p,0)*-40px)) scale(calc(1 + var(--p,0)*.04))}
+.stage .ph-l{left:50%;transform:translate(calc(-100% - 6% - var(--p,0)*60px),calc(var(--rise,0px)*1.15)) rotate(calc(-9deg - var(--p,0)*4deg))}
+.stage .ph-r{left:50%;transform:translate(calc(6% + var(--p,0)*60px),calc(var(--rise,0px)*1.3)) rotate(calc(9deg + var(--p,0)*4deg))}
+.glow{position:absolute;inset:auto 10% 0;height:70%;background:radial-gradient(closest-side,rgba(255,106,92,.22),transparent);filter:blur(10px);pointer-events:none}
+.hero h1,.hero .eyebrow,.hero .sub,.hero .ctas,.hero .note{animation:up 1s var(--ease) both}
+.hero .eyebrow{animation-delay:.05s}.hero h1{animation-delay:.12s}.hero .sub{animation-delay:.22s}.hero .ctas{animation-delay:.32s}.hero .note{animation-delay:.4s}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* statement */
+.statement{background:var(--band);padding-block:clamp(88px,12vw,160px);gap:56px}
+.words{font-size:clamp(28px,4.2vw,48px);line-height:1.2;font-weight:600;letter-spacing:-.02em;max-width:24ch}
+.words span{transition:color .35s}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;width:min(900px,100%)}
+.stat b{display:block;font-size:clamp(44px,5vw,56px);line-height:1;font-weight:700;color:var(--red);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:10px;color:var(--grey);font-size:17px}
+
+/* bento */
+.bento{padding-block:clamp(88px,12vw,140px)}
+.bento .h2{margin-bottom:clamp(32px,4vw,48px)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px}
+.tile{grid-column:span 6;background:var(--band);border-radius:28px;padding:clamp(28px,3.4vw,44px) clamp(24px,3.4vw,44px) 0;overflow:hidden;display:flex;flex-direction:column;min-height:clamp(520px,50vw,640px);transition:transform .5s var(--ease)}
+.tile.w8{grid-column:span 7}.tile.w4{grid-column:span 5}
+.tile h3{font-size:clamp(24px,2.6vw,32px);line-height:1.15;font-weight:700;letter-spacing:-.02em;max-width:20ch}
+.tile p{margin-top:10px;color:var(--grey);font-size:clamp(16px,1.5vw,19px);max-width:34ch}
+.tile .shot{margin:auto auto 0;padding-top:32px;width:clamp(220px,24vw,320px);transform:translateY(calc(var(--py,0)*1px));transition:transform .6s var(--ease)}
+.tile:hover{transform:scale(1.008)}
+.tile:hover .shot img{transform:translateY(-10px)}
+.tile .shot img{transition:transform .6s var(--ease);margin-bottom:-22%}
+.tile.dark{background:var(--night);color:#fff}
+.tile.dark p{color:var(--night-grey)}
+.tile .drop{position:absolute;width:clamp(60px,7vw,96px);animation:float 6s ease-in-out infinite}
+.tile{position:relative}
+@keyframes float{50%{transform:translateY(-14px) rotate(4deg)}}
+
+/* how */
+.how{background:var(--band);padding-block:clamp(88px,12vw,140px);gap:14px}
+.steps{list-style:none;padding:0;margin:clamp(40px,5vw,64px) 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,3vw,40px);width:min(1200px,100%)}
+.steps li{display:flex;flex-direction:column;align-items:center;gap:18px}
+.steps img{width:100%;max-width:260px}
+.steps .lab{display:flex;align-items:center;gap:10px;font-weight:600;font-size:clamp(16px,1.5vw,19px)}
+.num{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700;flex:none}
+.steps li:last-child .num{background:var(--red)}
+.dots{display:none}
+
+/* track: pinned scene */
+.track{background:var(--night);color:#fff}
+.track .pin{position:relative}
+.track-inner{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-block:96px 40px;overflow:hidden;gap:14px;text-align:center}
+.track .h2{color:#fff}
+.track .eyebrow{color:var(--red-hi)}
+.track .sub{color:var(--night-grey)}
+.scene{position:relative;width:min(1000px,100%);height:clamp(480px,48vw,640px);margin-top:28px}
+.scene .rglow{position:absolute;left:50%;top:50%;width:70%;aspect-ratio:1;max-width:620px;transform:translate(-50%,-45%);background:radial-gradient(closest-side,rgba(224,40,42,.55),transparent);filter:blur(20px);opacity:calc(.5 + var(--t,1)*.5)}
+.scene .phone{position:absolute;left:50%;top:0;width:clamp(230px,26vw,340px);transform:translateX(-50%) scale(calc(.86 + var(--t,1)*.14));transform-origin:50% 30%}
+.card{position:absolute;display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:20px;background:rgba(28,28,30,.88);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);text-align:left;box-shadow:0 20px 40px rgba(0,0,0,.4);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.card b{display:block;font-size:17px;font-weight:600}
+.card span{display:block;font-size:14px;color:var(--night-grey)}
+.card i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;background:#34c759}
+.card i.used{background:var(--red-hi)}
+.card i svg{width:15px;height:15px}
+.c1{left:0;top:8%}.c2{right:0;top:20%}.c3{left:4%;top:44%}.c4{right:2%;top:58%}.c5{left:12%;top:78%}
+.js .track .card{opacity:0;transform:translateY(20px) scale(.96)}
+.js .track .card.in{opacity:1;transform:none}
+
+/* centres */
+.centres{padding-block:clamp(88px,12vw,140px)}
+.split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(32px,6vw,80px);align-items:center}
+.split .copy{display:flex;flex-direction:column;gap:18px}
+.list{display:grid;gap:10px;margin-top:8px;max-width:480px}
+.row{display:flex;align-items:center;gap:14px;background:var(--band);border-radius:18px;padding:14px 18px}
+.row .pin{width:36px;height:36px;border-radius:50%;background:#fdecec;display:grid;place-items:center;flex:none}
+.row .pin svg{width:18px;height:18px}
+.row div{flex:1;min-width:0}
+.row b{display:block;font-weight:600}
+.row span{color:var(--grey);font-size:15px}
+.tag{font-size:13px;font-weight:600;padding:4px 10px;border-radius:12px;background:#e6f6ea;color:#1f7a35;white-space:nowrap}
+.tag.later{background:#e9e9ee;color:var(--grey)}
+.split .art{position:relative;display:flex;justify-content:center}
+.split .art img{width:min(380px,90%);transform:translateY(calc(var(--py,0)*1px))}
+
+/* safety */
+.safety{background:var(--band);padding-block:clamp(88px,12vw,140px);gap:48px}
+.cards3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;width:min(1200px,100%);text-align:left}
+.c3card{background:#fff;border-radius:28px;padding:clamp(28px,3vw,40px);display:flex;flex-direction:column;gap:14px}
+.c3card .ic{width:52px;height:52px;border-radius:50%;background:#fdecec;display:grid;place-items:center}
+.c3card .ic svg{width:26px;height:26px}
+.c3card h3{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.c3card p{color:var(--grey);font-size:19px;line-height:1.4}
+
+/* final */
+.final{padding-block:clamp(88px,12vw,140px);gap:18px}
+.final .icon{width:112px;height:112px;border-radius:30px;box-shadow:0 20px 50px rgba(224,40,42,.3)}
+.js .final .icon{transform:scale(.6);opacity:0;transition:transform .8s var(--spring),opacity .4s}
+.js .final.in .icon{transform:none;opacity:1}
+.final .ctas{display:flex;flex-direction:column;align-items:center;gap:20px;margin-top:8px}
+
+/* footer */
+footer{background:var(--band);padding-block:24px 40px;font-size:12px;line-height:1.35;color:var(--grey)}
+footer .fine{max-width:980px;padding-bottom:16px;border-bottom:1px solid var(--hair)}
+footer .base{display:flex;flex-wrap:wrap;gap:12px 20px;padding-top:16px;align-items:center}
+footer .base span{margin-right:auto}
+footer .base a{color:var(--ink)}
+
+/* reveal */
+.js .pre{opacity:0;transform:translateY(48px)}
+.reveal{transition:opacity 1s var(--ease),transform 1s var(--ease);transition-delay:var(--d,0s)}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,calc(100% + 48px));visibility:hidden;background:rgba(29,29,31,.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);color:#fff;padding:14px 20px;border-radius:16px;font-size:15px;max-width:calc(100vw - 32px);width:max-content;z-index:60;transition:transform .5s var(--spring),visibility 0s .5s}
+.toast.show{transform:translate(-50%,0);visibility:visible;transition:transform .5s var(--spring),visibility 0s}
+
+/* responsive */
+@media (max-width:1068px){
+  .tile.w8,.tile.w4{grid-column:span 6}
+}
+@media (max-width:833px){
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .tile,.tile.w8,.tile.w4{grid-column:auto;min-height:520px}
+  .stats{grid-template-columns:minmax(0,1fr);gap:32px}
+  .split{grid-template-columns:minmax(0,1fr)}
+  .split .copy{align-items:center;text-align:center}
+  .list{width:100%;text-align:left}
+  .cards3{grid-template-columns:minmax(0,1fr)}
+  .steps{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;margin-inline:calc(var(--gutter)*-1);padding-inline:var(--gutter);scrollbar-width:none;width:auto;align-self:stretch}
+  .steps::-webkit-scrollbar{display:none}
+  .steps li{flex:0 0 min(64vw,260px);scroll-snap-align:center}
+  .dots{display:flex;gap:8px;justify-content:center;margin-top:20px}
+  .dots i{width:8px;height:8px;border-radius:4px;background:var(--mute);transition:width .3s var(--ease),background .3s}
+  .dots i.on{width:22px;background:var(--ink)}
+  .scene{height:560px}
+  .card{padding:11px 14px;border-radius:16px}
+  .card b{font-size:15px}.card span{font-size:12px}
+  .c1{left:0;top:16%}.c2{right:0;top:30%}.c3{left:0;top:52%}.c4{right:0;top:66%}.c5{left:6%;top:82%}
+}
+@media (max-width:480px){
+  .badge{height:46px;padding:0 14px 0 11px}
+  .badge b{font-size:18px}.badge small{font-size:9.5px}
+  .stage .ph-l,.stage .ph-r{width:150px;bottom:-10%}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+  .js .pre,.js .track .card,.js .final .icon{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top" aria-label="Blood Charge, back to top">
+      <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M12 2.7s-6.5 7-6.5 11.8a6.5 6.5 0 0 0 13 0C18.5 9.7 12 2.7 12 2.7z"/></svg></span>
+      Blood Charge
+    </a>
+    <nav class="links" aria-label="Sections">
+      <a href="#overview" class="on">Overview</a>
+      <a href="#how">How it works</a>
+      <a href="#track">Track</a>
+      <a href="#centres">Centres</a>
+    </nav>
+    <a class="pill" href="https://www.behance.net/gallery/256830619/Blood-Charge-UX-Design-Case-Study-V2" target="_blank" rel="noopener">Case study</a>
+    <button class="menu" id="menu" aria-expanded="false" aria-controls="drawer" aria-label="Open menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+  </div>
+  <div class="drawer" id="drawer">
+    <a href="#overview">Overview</a><a href="#how">How it works</a><a href="#track">Track</a><a href="#centres">Centres</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="band hero center" id="overview">
+    <p class="eyebrow">Blood Charge</p>
+    <h1 class="h1">Give blood near you.</h1>
+    <p class="sub">Find a centre in Lagos, book a time and see which patient your blood helped.</p>
+    <div class="ctas">
+      <div class="stores">
+        <button class="badge store" type="button" aria-label="Download on the App Store">
+          <svg width="26" height="30" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span><small>Download on the</small><b>App Store</b></span>
+        </button>
+        <button class="badge store" type="button" aria-label="Get it on Google Play">
+          <svg width="24" height="26" viewBox="0 0 26 28" aria-hidden="true"><path fill="#00a0ff" d="M0 0 14 14 0 28Z"/><path fill="#00d46a" d="M0 0 18.5 10.2 14 14Z"/><path fill="#ff3a44" d="M0 28 14 14 18.5 17.8Z"/><path fill="#ffc107" d="M18.5 10.2 26 14 18.5 17.8 14 14Z"/></svg>
+          <span><small>GET IT ON</small><b>Google Play</b></span>
+        </button>
+      </div>
+      <a class="link" href="https://www.behance.net/gallery/256830619/Blood-Charge-UX-Design-Case-Study-V2" target="_blank" rel="noopener">Read the case study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+    </div>
+    <p class="note">A concept app for iPhone and Android.</p>
+    <div class="stage" id="stage">
+      <div class="glow"></div>
+      <img class="ph-l" src="assets/f1-natural.webp" width="1018" height="1936" alt="Track screen showing a donation timeline from donated to used">
+      <img class="ph-r" src="assets/d1-natural.webp" width="1018" height="1936" alt="Map of donation centres near you in Lagos">
+      <img class="ph-c" src="assets/b1-black.webp" width="1018" height="1936" alt="Home screen saying you can give blood today, with urgent requests near you">
+    </div>
+  </section>
+
+  <section class="band statement center" aria-label="Why it exists">
+    <p class="words" id="words">Most people have never been asked to give blood. In my survey, every person who hadn't given said they never had the chance.</p>
+    <div class="stats">
+      <div class="stat reveal"><b data-count="100" data-suffix="%">100%</b><span>of non-donors never had the chance</span></div>
+      <div class="stat reveal" style="--d:.1s"><b data-count="80" data-suffix="%">80%</b><span>would give to anyone who needs it</span></div>
+      <div class="stat reveal" style="--d:.2s"><b data-count="51" data-suffix="%">51%</b><span>had no centre nearby, or weren't sure</span></div>
+    </div>
+  </section>
+
+  <section class="band bento" aria-labelledby="what">
+    <h2 class="h2 reveal" id="what">What it does.</h2>
+    <div class="grid">
+      <article class="tile w8 reveal">
+        <h3>Know if you can give today.</h3>
+        <p>Home tells you when your 12-week wait is over.</p>
+        <div class="shot" data-parallax=".08"><img src="assets/b1-black.webp" width="1018" height="1936" alt="Home screen with an Eligible now badge" loading="lazy"></div>
+      </article>
+      <article class="tile w4 reveal" style="--d:.08s">
+        <h3>Requests matched to your blood type.</h3>
+        <p>You only see requests you can help with, sorted by distance.</p>
+        <div class="shot" data-parallax=".08"><img src="assets/b3-red.webp" width="1018" height="1936" alt="List of urgent O positive blood requests near you" loading="lazy"></div>
+      </article>
+      <article class="tile w4 reveal">
+        <h3>A nurse can come to you.</h3>
+        <p>Free home visits in Lagos, tracked on a map.</p>
+        <div class="shot" data-parallax=".08"><img src="assets/c8-black.webp" width="1018" height="1936" alt="Map showing a nurse on the way, arriving in 12 minutes" loading="lazy"></div>
+      </article>
+      <article class="tile w8 dark reveal" style="--d:.08s">
+        <h3>Your ticket in Apple Wallet.</h3>
+        <p>Show the QR code at the front desk when you arrive.</p>
+        <img class="drop" src="assets/drop.webp" alt="" style="left:9%;top:44%" loading="lazy">
+        <img class="drop" src="assets/drop.webp" alt="" style="right:10%;top:30%;width:56px;animation-delay:-3s" loading="lazy">
+        <div class="shot" data-parallax=".08"><img src="assets/c9-red.webp" width="1018" height="1936" alt="Donation ticket for Tuesday 7 October at 10:30 AM with a QR code" loading="lazy"></div>
+      </article>
+      <article class="tile reveal">
+        <h3>Points for every donation.</h3>
+        <p>Turn them into free blood counts and pharmacy vouchers.</p>
+        <div class="shot" data-parallax=".08"><img src="assets/f4-natural.webp" width="1018" height="1936" alt="Rewards screen showing 2,450 points" loading="lazy"></div>
+      </article>
+      <article class="tile reveal" style="--d:.08s">
+        <h3>Know what happens first.</h3>
+        <p>Short videos and a checklist for your first donation.</p>
+        <div class="shot" data-parallax=".08"><img src="assets/e3-black.webp" width="1018" height="1936" alt="Video explaining what happens when you give blood" loading="lazy"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="band how center" id="how" aria-labelledby="how-h">
+    <p class="eyebrow reveal">How it works</p>
+    <h2 class="h2 reveal" id="how-h">Booked in five steps.</h2>
+    <p class="sub reveal">Choose how to give, pick a time and get ready. Your ticket is waiting at the end.</p>
+    <ol class="steps" id="steps">
+      <li class="reveal"><img src="assets/c1-black.webp" width="1018" height="1936" alt="Sheet asking how you would like to give" loading="lazy"><span class="lab"><span class="num">1</span>Choose how to give</span></li>
+      <li class="reveal" style="--d:.1s"><img src="assets/c3-black.webp" width="1018" height="1936" alt="Picking Tuesday 7 October at 10:30 AM" loading="lazy"><span class="lab"><span class="num">2</span>Pick a time</span></li>
+      <li class="reveal" style="--d:.2s"><img src="assets/c4-black.webp" width="1018" height="1936" alt="Checklist of things to do before you give" loading="lazy"><span class="lab"><span class="num">3</span>Get ready</span></li>
+      <li class="reveal" style="--d:.3s"><img src="assets/c6-red.webp" width="1018" height="1936" alt="Confirmation that you are booked" loading="lazy"><span class="lab"><span class="num">4</span>Booked</span></li>
+    </ol>
+    <div class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+  </section>
+
+  <section class="track" id="track" aria-labelledby="track-h">
+    <div class="pin" id="pin">
+      <div class="band track-inner" id="trackInner">
+        <p class="eyebrow">Track</p>
+        <h2 class="h2" id="track-h">See where your blood went.</h2>
+        <p class="sub">Every donation gets a timeline, from testing to the patient who received it.</p>
+        <div class="scene">
+          <div class="rglow"></div>
+          <img class="phone" src="assets/f1-red.webp" width="1018" height="1936" alt="Timeline of a donation from 7 July to 16 July" loading="lazy">
+          <div class="card c1"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></i><div><b>Donated</b><span>7 Jul · LASUTH Blood Bank</span></div></div>
+          <div class="card c2"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></i><div><b>Tested</b><span>8 Jul · Screened</span></div></div>
+          <div class="card c3"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></i><div><b>Processed</b><span>9 Jul · Red cells and plasma</span></div></div>
+          <div class="card c4"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></i><div><b>Sent to hospital</b><span>14 Jul · Cedar Health Care</span></div></div>
+          <div class="card c5"><i class="used"><svg viewBox="0 0 24 24" fill="#fff"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></i><div><b>Used</b><span>16 Jul · After surgery</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band centres" id="centres" aria-labelledby="centres-h">
+    <div class="split">
+      <div class="copy">
+        <p class="eyebrow reveal">Centres</p>
+        <h2 class="h2 reveal" id="centres-h">Find a centre near you.</h2>
+        <p class="sub reveal" style="max-width:26ch">Opening hours, drive times and the blood types each centre needs today.</p>
+        <div class="list">
+          <div class="row reveal"><span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="#e0282a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><b>LASUTH Blood Bank</b><span>Ikeja · 2.4 km</span></div><span class="tag">Open</span></div>
+          <div class="row reveal" style="--d:.08s"><span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="#e0282a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><b>Cedar Health Care</b><span>Ajah · 5.8 km</span></div><span class="tag">Open</span></div>
+          <div class="row reveal" style="--d:.16s"><span class="pin"><svg viewBox="0 0 24 24" fill="none" stroke="#e0282a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><div><b>Jamal Teaching Hospital</b><span>Bogije · 9.6 km</span></div><span class="tag later">Opens 8 AM</span></div>
+        </div>
+      </div>
+      <div class="art reveal"><img src="assets/d1-natural.webp" width="1018" height="1936" alt="Map with LASUTH selected and directions and book buttons" loading="lazy" data-parallax=".06"></div>
+    </div>
+  </section>
+
+  <section class="band safety center" aria-labelledby="safe-h">
+    <h2 class="h2 reveal" id="safe-h">Safe and private.</h2>
+    <div class="cards3">
+      <div class="c3card reveal"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#e0282a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7s-6.5 7-6.5 11.8a6.5 6.5 0 0 0 13 0C18.5 9.7 12 2.7 12 2.7z"/></svg></span><h3>Matched by blood type</h3><p>You only see requests your blood can help. An O+ donor never sees an O− request.</p></div>
+      <div class="c3card reveal" style="--d:.1s"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#e0282a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 7v6M9 10h6M9 21v-3h6v3"/></svg></span><h3>Checked by hospitals</h3><p>A request goes live only after the hospital confirms it.</p></div>
+      <div class="c3card reveal" style="--d:.2s"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#e0282a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><h3>Your number stays private</h3><p>Hospitals see your phone number only if you pledge to their request.</p></div>
+    </div>
+  </section>
+
+  <section class="band final center" id="final" aria-labelledby="final-h">
+    <span class="icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M12 2.7s-6.5 7-6.5 11.8a6.5 6.5 0 0 0 13 0C18.5 9.7 12 2.7 12 2.7z"/></svg></span>
+    <h2 class="h2" id="final-h">Blood Charge</h2>
+    <p class="sub">A concept app for iPhone and Android, designed by Adekunle Oladosu.</p>
+    <div class="ctas">
+      <div class="stores">
+        <button class="badge store" type="button" aria-label="Download on the App Store">
+          <svg width="26" height="30" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span><small>Download on the</small><b>App Store</b></span>
+        </button>
+        <button class="badge store" type="button" aria-label="Get it on Google Play">
+          <svg width="24" height="26" viewBox="0 0 26 28" aria-hidden="true"><path fill="#00a0ff" d="M0 0 14 14 0 28Z"/><path fill="#00d46a" d="M0 0 18.5 10.2 14 14Z"/><path fill="#ff3a44" d="M0 28 14 14 18.5 17.8Z"/><path fill="#ffc107" d="M18.5 10.2 26 14 18.5 17.8 14 14Z"/></svg>
+          <span><small>GET IT ON</small><b>Google Play</b></span>
+        </button>
+      </div>
+      <a class="link" href="https://www.behance.net/gallery/256830619/Blood-Charge-UX-Design-Case-Study-V2" target="_blank" rel="noopener">Read the case study <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>
+    </div>
+  </section>
+</main>
+
+<footer class="band">
+  <p class="fine">Blood Charge is a concept and a UX case study. The App Store and Google Play buttons show where the app would be offered. It isn't live yet. Hospitals and centres named here are examples, not partners. Survey figures come from an online survey in 2021 with 19 to 39 answers per question.</p>
+  <div class="base">
+    <span>Copyright © 2026 Adekunle Oladosu.</span>
+    <a href="https://www.behance.net/gallery/256830619/Blood-Charge-UX-Design-Case-Study-V2" target="_blank" rel="noopener">Case study</a>
+    <a href="https://www.figma.com/design/MT2ddvmlIkLcvdaFxxiZHw/Blood-donation-wireframes?node-id=1808-517" target="_blank" rel="noopener">App designs</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var nav=document.getElementById('nav');
+  var menu=document.getElementById('menu');
+
+  // Menu
+  menu.addEventListener('click',function(){var o=nav.classList.toggle('open');menu.setAttribute('aria-expanded',o);menu.setAttribute('aria-label',o?'Close menu':'Open menu')});
+  document.querySelectorAll('.drawer a').forEach(function(a){a.addEventListener('click',function(){nav.classList.remove('open');menu.setAttribute('aria-expanded','false')})});
+
+  // Store buttons: the app is a concept
+  var toast=document.getElementById('toast'),tt;
+  document.querySelectorAll('.store').forEach(function(b){b.addEventListener('click',function(){
+    toast.textContent='Blood Charge is a concept app, so it isn’t in the stores yet.';
+    toast.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){toast.classList.remove('show')},3200);
+  })});
+
+  // Statement words: grey to ink as you scroll
+  var words=document.getElementById('words');
+  var parts=words.textContent.split(' ');
+  words.innerHTML=parts.map(function(w){return '<span>'+w+'</span>'}).join(' ');
+  var spans=words.querySelectorAll('span');
+
+  if(reduce){return}
+  root.classList.add('js');
+
+  // Reveal: only things below the first screen start hidden
+  var vh=window.innerHeight;
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('pre');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){if(el.getBoundingClientRect().top>vh*0.92){el.classList.add('pre');io.observe(el)}});
+
+  // Count up
+  var cio=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var el=e.target,end=+el.dataset.count,suf=el.dataset.suffix||'',t0=null;
+    function step(t){if(!t0)t0=t;var k=Math.min(1,(t-t0)/1200),v=Math.round(end*(1-Math.pow(1-k,3)));el.textContent=v+suf;if(k<1)requestAnimationFrame(step)}
+    if(el.getBoundingClientRect().top>vh*0.92){el.textContent='0'+suf;requestAnimationFrame(step)}cio.unobserve(el)})},{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(function(el){cio.observe(el)});
+
+  // Final icon pop
+  var fin=document.getElementById('final');
+  var fio=new IntersectionObserver(function(es){if(es[0].isIntersecting){fin.classList.add('in');fio.disconnect()}},{threshold:.4});fio.observe(fin);
+
+  // Hero rise on load
+  var stage=document.getElementById('stage');
+  stage.style.setProperty('--rise','140px');
+  stage.querySelectorAll('img').forEach(function(img,i){img.style.transition='transform 1.3s cubic-bezier(.22,1,.36,1) '+(0.35+i*0.08)+'s'});
+  requestAnimationFrame(function(){requestAnimationFrame(function(){stage.style.setProperty('--rise','0px')})});
+  setTimeout(function(){stage.querySelectorAll('img').forEach(function(img){img.style.transition='none'})},2000);
+
+  // Track pinned scene
+  var pin=document.getElementById('pin'),inner=document.getElementById('trackInner'),cards=inner.querySelectorAll('.card');
+  pin.style.height='230vh';inner.style.position='sticky';inner.style.top='0';
+
+  var par=[].slice.call(document.querySelectorAll('[data-parallax]'));
+  var links=[].slice.call(document.querySelectorAll('.links a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  var ticking=false;
+  function frame(){
+    ticking=false;
+    var h=window.innerHeight,y=window.scrollY;
+    nav.classList.toggle('scrolled',y>4);
+    // hero spread
+    var r=stage.getBoundingClientRect();
+    var p=Math.min(1,Math.max(0,(h-r.top)/(h+r.height)-.35)*2);
+    stage.style.setProperty('--p',p.toFixed(3));
+    // words
+    var wr=words.getBoundingClientRect();
+    var wp=Math.min(1,Math.max(0,(h*0.85-wr.top)/(wr.height+h*0.35)));
+    var lit=Math.round(wp*spans.length);
+    for(var i=0;i<spans.length;i++){spans[i].style.color=i<lit?'var(--ink)':'var(--mute)'}
+    // parallax
+    par.forEach(function(el){var b=el.getBoundingClientRect();var c=(b.top+b.height/2-h/2);el.style.setProperty('--py',(-c*(+el.dataset.parallax)).toFixed(1))});
+    // track
+    var pr=pin.getBoundingClientRect();
+    var t=Math.min(1,Math.max(0,-pr.top/(pr.height-h)));
+    inner.style.setProperty('--t',Math.min(1,t*2.2).toFixed(3));
+    cards.forEach(function(c,i){c.classList.toggle('in',t>0.12+i*0.13)});
+    // nav highlight
+    var cur=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<h*0.4)cur=i});
+    links.forEach(function(a,i){a.classList.toggle('on',i===cur)});
+  }
+  function onScroll(){if(!ticking){ticking=true;requestAnimationFrame(frame)}}
+  window.addEventListener('scroll',onScroll,{passive:true});
+  window.addEventListener('resize',function(){vh=window.innerHeight;onScroll()});
+  frame();
+
+  // Steps dots on mobile
+  var steps=document.getElementById('steps'),dots=document.querySelectorAll('#dots i');
+  steps.addEventListener('scroll',function(){var w=steps.scrollWidth-steps.clientWidth;var k=w>0?Math.round(steps.scrollLeft/w*(dots.length-1)):0;dots.forEach(function(d,i){d.classList.toggle('on',i===k)})},{passive:true});
+})();
+</script>
+
+</body>
+</html>
